@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kavbet - Yönlendiriliyor...</title>
+    <style>
+        /* Genel Reset ve Temel Stil */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            color: #ff0000; /* Kırmızı */
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 1rem; /* Mobil kenar boşlukları */
+        }
+
+        /* Arka Plan Efekti - Modern Dalga (Responsive SVG) */
+        .bg-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a0000 0%, #000 100%);
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%; /* Mobil için daha az yükseklik */
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1440 320" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path fill="%23ff0000" fill-opacity="0.15" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom center;
+            background-size: cover;
+            animation: waveAnim 6s ease-in-out infinite;
+        }
+
+        @keyframes waveAnim {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); } /* Mobil için daha yumuşak */
+        }
+
+        /* Parçacık Efekti (Kırmızı Işıklar) */
+        .particle {
+            position: absolute;
+            background: #ff0000;
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+            animation: float 3s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) scale(0); opacity: 0; }
+            50% { opacity: 0.6; }
+            100% { transform: translateY(-120px) scale(1); opacity: 0; } /* Mobil için daha kısa yol */
+        }
+
+        /* Ana İçerik - Tam Responsive */
+        .container {
+            text-align: center;
+            z-index: 10;
+            position: relative;
+            animation: fadeIn 0.8s ease-out forwards;
+            width: 100%;
+            max-width: 500px; /* Geniş ekranlarda sınırlı genişlik */
+            padding: 0 1rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Logo - Responsive Font */
+        .logo {
+            font-size: clamp(2.5rem, 10vw, 4.5rem); /* Min 2.5rem, max 4.5rem */
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff0000, #ff3333, #ff0000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: clamp(60px, 20vw, 80px);
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #ff0000, transparent);
+            border-radius: 2px;
+        }
+
+        /* Alt Başlık */
+        .subtitle {
+            font-size: clamp(1rem, 4vw, 1.4rem);
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+        }
+
+        /* Yükleme Çubuğu - Responsive */
+        .loader {
+            width: 80%; /* % tabanlı genişlik */
+            max-width: 350px;
+            height: 6px;
+            background: rgba(255, 0, 0, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 0 auto 1.5rem;
+            position: relative;
+        }
+
+        .loader-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff0000, #ff3333);
+            border-radius: 3px;
+            animation: load 3.5s ease-in-out forwards;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+        }
+
+        @keyframes load {
+            to { width: 100%; }
+        }
+
+        /* Bilgi Metni */
+        .info {
+            font-size: clamp(0.8rem, 3vw, 0.95rem);
+            opacity: 0.7;
+            margin-top: 1rem;
+            animation: pulse 2s infinite;
+            white-space: nowrap; /* Taşma önleme */
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Ekstra Buton: Hemen Git */
+        .btn-immediate {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.75rem 2rem;
+            font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(45deg, #ff0000, #cc0000);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            animation: btnPulse 2s infinite;
+        }
+
+        .btn-immediate:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 0, 0, 0.6);
+        }
+
+        @keyframes btnPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Mobil Optimizasyon: Dikey Ekranlarda Daha İyi Hizalama */
+        @media (max-height: 600px) and (orientation: landscape) {
+            body {
+                align-items: flex-start;
+                padding-top: 2rem;
+            }
+            .wave {
+                height: 30%;
+            }
+        }
+
+        /* Yüksek Çözünürlüklü Ekranlar için */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .wave {
+                background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 2880 640" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path fill="%23ff0000" fill-opacity="0.15" d="M0,192L96,224C192,256,384,320,576,320C768,320,960,256,1152,224C1344,192,1536,192,1728,224C1920,256,2112,320,2304,320C2496,320,2688,256,2784,224L2880,192L2880,640L2784,640C2688,640,2496,640,2304,640C2112,640,1920,640,1728,640C1536,640,1344,640,1152,640C960,640,768,640,576,640C384,640,192,640,96,640L0,640Z"></path></svg>');
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="bg-effect">
+        <div class="wave"></div>
+    </div>
+
+    <div class="container">
+        <div class="logo">KAVBET</div>
+        <p class="subtitle">Tutku. Adrenalin. Kazan.</p>
+        
+        <div class="loader">
+            <div class="loader-fill"></div>
+        </div>
+        
+        <p class="info">Yönlendiriliyorsunuz... Lütfen bekleyin.</p>
+
+        <!-- Ekstra Buton: Hemen Git -->
+        <a href="https://www.630kavbet.com/sports" class="btn-immediate" id="immediate-btn">Hemen Git</a>
+    </div>
+
+    <!-- Parçacık Efekti (JS ile oluşturulacak - Mobil Performans için Azaltıldı) -->
+    <script>
+        // Parçacıklar oluştur (mobil için daha az sıklık)
+        let particleInterval;
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            const size = Math.random() * 5 + 2; // Daha küçük parçacıklar
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${Math.random() * 100}vw`;
+            particle.style.bottom = `${Math.random() * 40 + 10}vh`;
+            particle.style.animationDelay = `${Math.random() * 1.5}s`;
+            particle.style.animationDuration = `${Math.random() * 1.5 + 2}s`;
+            
+            document.body.appendChild(particle);
+            
+            setTimeout(() => {
+                if (particle.parentNode) particle.remove();
+            }, 3500);
+        }
+
+        // Mobil tespit ve interval ayarı
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const intervalTime = isMobile ? 500 : 300; // Mobil için daha az parçacık
+        particleInterval = setInterval(createParticle, intervalTime);
+
+        // 3.5 saniye sonra otomatik yönlendirme
+        const redirectTimeout = setTimeout(() => {
+            clearInterval(particleInterval);
+            window.location.href = 'https://www.630kavbet.com/sports'; // Gerçek URL
+        }, 3500);
+
+        // Hemen Git butonu: Otomatik yönlendirmeyi iptal et ve hemen git
+        document.getElementById('immediate-btn').addEventListener('click', function(e) {
+            clearTimeout(redirectTimeout);
+            clearInterval(particleInterval);
+            // Hemen yönlendir (href zaten var)
+            window.location.href = this.href;
+        });
+    </script>
+
+</body>
+</html>
